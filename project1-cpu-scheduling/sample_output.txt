@@ -1,0 +1,32 @@
+Operating System Scheduling Simulation
+Input file: processes.txt
+
+============================
+FCFS Gantt Chart:
+| P1 | P2 | P3 | P4 | P5 |
+0    7    11    17    20    25
+
+FCFS Results:
+PID	AT	BT	WT	TAT	CT
+1	0	7	0	7	7
+2	1	4	6	10	11
+3	3	6	8	14	17
+4	5	3	12	15	20
+5	7	5	13	18	25
+Average WT = 7.8
+Average TAT = 12.8
+
+============================
+Round Robin (q=2) Gantt Chart:
+| P1 | P2 | P1 | P3 | P2 | P4 | P1 | P5 | P3 | P4 | P1 | P5 | P3 | P5 |
+0    2    4    6    8    10    12    14    16    18    19    20    22    24    25
+
+Round Robin Results:
+PID	AT	BT	WT	TAT	CT
+1	0	7	13	20	20
+2	1	4	5	9	10
+3	3	6	15	21	24
+4	5	3	11	14	19
+5	7	5	13	18	25
+Average WT = 11.4
+Average TAT = 16.4
