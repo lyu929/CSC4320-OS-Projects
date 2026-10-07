@@ -1,0 +1,12 @@
+{
+  "name": "cpu-scheduling-visualizer",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Static web front-end for the scheduling simulator (no build step, no dependencies).",
+  "scripts": {
+    "test": "node --test",
+    "serve": "python3 -m http.server 8080"
+  },
+  "engines": { "node": ">=20" }
+}

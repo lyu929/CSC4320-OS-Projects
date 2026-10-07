@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CPU Scheduling Visualizer</title>
+  <meta name="description" content="Interactive Gantt charts and metrics for FCFS, SJF, SRTF, HRRN, priority, round robin and MLFQ scheduling.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>CPU Scheduling Visualizer</h1>
+    <p>Same engine as the C++ <code>schedsim</code> (cross-checked in CI). Edit the workload, pick policies, compare.</p>
+  </header>
+
+  <main>
+    <section class="panel controls" aria-label="Inputs">
+      <h2>Workload</h2>
+      <textarea id="workload" spellcheck="false" rows="10" aria-label="Workload: PID Arrival Burst Priority"></textarea>
+      <p id="workload-error" class="error" role="alert"></p>
+      <div class="row">
+        <button id="example" type="button">Course example</button>
+        <button id="random" type="button">Random</button>
+      </div>
+      <details>
+        <summary>Random workload settings</summary>
+        <div class="grid">
+          <label>Processes <input id="gen-n" type="number" min="1" max="500" value="12"></label>
+          <label>Load ρ <input id="gen-load" type="number" min="0.1" max="2" step="0.05" value="0.9"></label>
+          <label>Mean burst <input id="gen-mean" type="number" min="1" max="100" value="6"></label>
+          <label>Bursts
+            <select id="gen-dist"><option value="exp">exponential</option><option value="uniform">uniform</option><option value="bimodal">bimodal</option></select>
+          </label>
+          <label>Seed <input id="gen-seed" type="number" min="0" value="1"></label>
+        </div>
+      </details>
+
+      <h2>Policies</h2>
+      <div id="policies" class="checks"></div>
+
+      <h2>Parameters</h2>
+      <div class="grid">
+        <label>RR quantum <input id="quantum" type="number" min="1" value="2"></label>
+        <label>MLFQ quanta <input id="mlfq" type="text" value="2/4/8" pattern="\d+(/\d+)*"></label>
+        <label>MLFQ boost <input id="boost" type="number" min="0" value="0"></label>
+        <label>Priority aging <input id="aging" type="number" min="0" step="0.5" value="0"></label>
+        <label>Context switch <input id="cs" type="number" min="0" value="0"></label>
+      </div>
+      <div class="row">
+        <button id="run" type="button" class="primary">Simulate</button>
+        <button id="share" type="button">Copy link</button>
+      </div>
+    </section>
+
+    <section class="results" aria-live="polite">
+      <div class="panel">
+        <h2>Comparison</h2>
+        <div id="chart"></div>
+        <div class="table-wrap"><table id="compare"></table></div>
+        <p class="hint">WT waiting · TAT turnaround · RT response · slowdown = TAT / burst · fairness = Jain's index of burst / TAT.</p>
+      </div>
+      <div id="gantts"></div>
+    </section>
+  </main>
+
+  <footer>
+    <a href="https://github.com/lyu929/CSC4320-OS-Projects">Source on GitHub</a> ·
+    C++ engine: <code>scheduler/</code> · this page: <code>web/</code>
+  </footer>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

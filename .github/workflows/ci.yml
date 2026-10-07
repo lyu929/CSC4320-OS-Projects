@@ -1,0 +1,68 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  cpp:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        compiler: [gcc, clang]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure
+        env:
+          CXX: ${{ matrix.compiler == 'gcc' && 'g++' || 'clang++' }}
+        run: cmake --preset dev
+      - name: Build
+        run: cmake --build --preset dev -j
+      - name: Test
+        run: ctest --preset dev -j 4
+      - name: Golden files are up to date
+        run: |
+          scripts/make_golden.sh build/dev/scheduler/schedsim /tmp/golden
+          diff -r tests/golden /tmp/golden
+      - name: Smoke-test the CLIs
+        run: |
+          build/dev/scheduler/schedsim -a all --format compare scheduler/data/processes.txt
+          build/dev/scheduler/schedbench --reps 3 --n 200 --loads 0.9
+
+  sanitizers:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: cmake --preset asan
+      - run: cmake --build --preset asan -j
+      - run: ctest --preset asan -j 4
+
+  web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Unit tests and C++ cross-check
+        working-directory: web
+        run: npm test
+
+  java:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+          cache: maven
+      - name: Build and test
+        working-directory: sync
+        run: mvn -B -q verify
+      - name: Smoke-test the demos
+        working-directory: sync
+        run: |
+          java -jar target/os-sync-1.0.0.jar all --quiet --file ../scheduler/data/processes.txt --unit-ms 10
