@@ -13,7 +13,7 @@ jobs:
       matrix:
         compiler: [gcc, clang]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Configure
         env:
           CXX: ${{ matrix.compiler == 'gcc' && 'g++' || 'clang++' }}
@@ -34,7 +34,7 @@ jobs:
   sanitizers:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - run: cmake --preset asan
       - run: cmake --build --preset asan -j
       - run: ctest --preset asan -j 4
@@ -42,8 +42,8 @@ jobs:
   web:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: 22
       - name: Unit tests and C++ cross-check
@@ -53,8 +53,8 @@ jobs:
   java:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: 17
